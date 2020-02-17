@@ -7,10 +7,23 @@ public class populationCountProblem {
 	public static void main(String agrs[]) throws Exception {
 
 		// Read the two arrays
-		int[] b = { 1902, 1941, 2004, 1957, 1989, 1909, 1918, 1913, 1979, 1961,
-				1977, 1909, 1991 };
+		int[] b = {1902, 1941, 2004, 1957, 1989, 1909,
+				1918, 1913, 1979, 1961, 1977, 1909};
 		int[] d = { 1991, 1978, 2008, 2005, 2010, 2002, 2003, 1991 };
+		
+		//call processData method to work out on the problem
+		countPopulation ct = new countPopulation();
+		ct.processData(b, d);
 
+
+	}
+
+}
+
+class countPopulation {
+	
+	void processData(int[] b, int []d) {
+		
 		int[][] bornArray = new int[b.length][2];
 		int[][] diedArray = new int[d.length][2];
 
@@ -26,10 +39,16 @@ public class populationCountProblem {
 			diedArray[k][1] = -1;
 		}
 
+		System.out.println("Born: " + Arrays.deepToString(bornArray));
+		System.out.println("Died: " + Arrays.deepToString(diedArray));
+		
 		// append two Arrays
-	
-		int[][] combined = appendArrays(bornArray, diedArray);
-
+		int[][] combined = new int[bornArray.length + diedArray.length][];
+		System.arraycopy(bornArray, 0, combined, 0, bornArray.length);
+		System.arraycopy(diedArray, 0, combined, bornArray.length, diedArray.length);
+		
+		
+		
 		// Sort the two Arrays on the basis of year
 		Arrays.sort(combined, new Comparator<int[]>() {
 			public int compare(int[] o1, int[] o2) {
@@ -49,30 +68,25 @@ public class populationCountProblem {
 
 		// Now report the years where population has decreased
 		List<Integer> in = new ArrayList<Integer>();
-		for (int curr = 1; curr < combined.length - 1; curr++) {
+		for (int curr = 1; curr < combined.length; curr++) {
 
 			if (combined[curr][1] - combined[curr - 1][1] < 0) {
-
-				in.add(combined[curr][0]);
+				 
+				//death this year is counted next year
+				in.add(combined[curr][0]+1);
 
 			}
 
 		}
+	
 		// Remove duplicates from the array
 		Set<Integer> set = new HashSet<>(in);
 		in.clear();
 		in.addAll(set);
 
-		System.out.println("Years where population decreased: " + in);
+		System.out.println("Years where population decreased(w/o dups): " + in);
 	}
-
-	public static int[][] appendArrays(int[][] a, int[][] b) {
-
-		int[][] result = new int[a.length + b.length][];
-		System.arraycopy(a, 0, result, 0, a.length);
-		System.arraycopy(b, 0, result, a.length, b.length);
-
-		return result;
+		
 	}
+	
 
-}
